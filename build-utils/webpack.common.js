@@ -1,6 +1,7 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const PrettierPlugin = require("prettier-webpack-plugin");
 
 module.exports = {
   entry: './src/index.js',
@@ -27,7 +28,8 @@ module.exports = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/template.html'
-    })
+    }),
+    new PrettierPlugin()
   ],
   output: {
     path: path.resolve(__dirname, '../', 'dist'),

@@ -2,6 +2,8 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PrettierPlugin = require("prettier-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const devMode = process.env.env !== 'production';
 
 module.exports = {
   entry: './src/index.js',
@@ -13,11 +15,18 @@ module.exports = {
         use: ['babel-loader']
       },
       {
-        test: /\.css$/,
+        test: /\.(sa|sc|c)ss$/,
         use: [
-          "style-loader",
-          "css-loader"
-        ]
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: process.env.env === 'dev',
+            },
+          },
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
+        ],
       }
     ]
   },
@@ -29,7 +38,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/template.html'
     }),
-    new PrettierPlugin()
+    new PrettierPlugin(),
+    new MiniCssExtractPlugin({
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+    })
   ],
   output: {
     path: path.resolve(__dirname, '../', 'dist'),
